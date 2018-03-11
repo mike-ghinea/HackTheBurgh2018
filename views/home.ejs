@@ -3,8 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
+    <link rel="stylesheet" href="/loading-bar.css">
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
+    <% include functions %>
+    <div class="container data-display">
+        <div class="row">    
+            <div 
+            class="ldBar label-center col-md-4" 
+            data-stroke-width="6" 
+            data-preset="fan" 
+            data-value="<%= result.airQuality %>" 
+            style="height:40%">
+            </div>
+            <div 
+            class="ldBar label-center col-md-4" 
+            data-stroke-width="6" 
+            data-preset="fan" 
+            data-value="<%= result.humidity %>" 
+            style="height:40%">
+            </div>  
+            <div id="temp"
+            class="ldBar label-center col-md-4" 
+            data-stroke-width="6" 
+            data-preset="fan"
+            data-value="<%= normalizeTemp(result.temperature) %>" 
+            style="height:40%">
+            </div>
+        </div>
+        <div class="row">
+            <p class="col-md-4 text-center">Air Quality</p>
+            <p class="col-md-4 text-center">Humidity</p>
+            <p class="col-md-4 text-center">Temperature</p>
+        </div>
+    </div>
+
     
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script src="loading-bar.min.js"></script>
+<script>
+    document.getElementsByClassName("ldBar-label")[0].innerHTML = "40";
+</script>
+<script src="home.js"></script>
 </html>

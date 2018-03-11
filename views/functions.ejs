@@ -1,0 +1,14 @@
+<%
+normalizeTemp = function(temp){
+    // y=mx+c
+    tempHighLimit = 50;
+    tempLowLimit = -20;
+    m = 100/(tempHighLimit - tempLowLimit);
+    c = 100 - (tempHighLimit * m);
+    result = Math.round(m * temp + c);
+    if(result == -0){
+        result = 0;
+    }
+    return result;
+}
+%>
