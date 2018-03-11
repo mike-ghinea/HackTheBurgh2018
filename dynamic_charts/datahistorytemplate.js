@@ -9,15 +9,15 @@ window.onload = function() {
       // Change to true if we want to see zero on the
       // y-axis
       includeZero: false,
-      text: "y-axis"
+      title: "y-axis"
     },
     axisX: {
       // Change to true if we want to see zero on the
       // x-axis
-      text: "x-axis",
+      title: "x-axis",
     },
     data: [{
-      type: "line",
+      type: "area",
       dataPoints: dps
     }]
   });
@@ -30,7 +30,8 @@ window.onload = function() {
   var updateInterval = 1000;
 
   // Maximum number of data points visible on the graph at a time.
-  var dataLength = 20;
+  let dataLengthLimit = 20;
+  var dataLength = 0;
 
   var updateChart = function (count) {
 
@@ -40,7 +41,8 @@ window.onload = function() {
 
     for (var i = 0; i < count; i++)
     {
-      yValue += Math.round(5 * Math.random() * (Math.round(Math.random()) == 1 ? 1 : -1));
+      yValue = randomValue;
+      // yValue += Math.round(5 * Math.random() * (Math.round(Math.random()) == 1 ? 1 : -1));
       dps.push({
         x: xValue,
         y: yValue
@@ -48,7 +50,7 @@ window.onload = function() {
       xValue++;
     }
 
-    if (dps.length > dataLength)
+    if (dps.length > dataLengthLimit)
     {
       dps.shift();
     }
@@ -58,7 +60,7 @@ window.onload = function() {
 
   updateChart(dataLength);
   setInterval(function(){updateChart()}, updateInterval);
-}
+};
 
 // Usage:
 /*

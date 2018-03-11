@@ -35,5 +35,5 @@ var radialGaugeSample = new RadialGauge ({
 radialGaugeSample.draw();
 // animate
 setInterval(function() {
-  radialGaugeSample.value = Math.random() * -50 + 50;
+  radialGaugeSample.value = randomValue;
 }, 1000);
