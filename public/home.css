@@ -4,16 +4,28 @@
 .body{
     height: 100%;
 }
-.data-display{
-    height: 30%;
-    background-color: rgb(153,166, 177);
+#homeTitle{
+    font-family: 'Mina'
 }
+
+.dataNumbers{
+    font-family: 'Mina';
+    font-size: 20px;
+}
+
+.data-display{
+    padding: auto auto;
+    height: 400px;
+    background-color: rgb(233, 231, 231);
+    border-radius: 25px;
+}
+
 .data{
-    height: 2000px;
+    height: 200px;
 }
 .ldBar-label{
     display: none;
 }
-#top{
-    height: 200px;
+.space{
+    height: 112px;
 }

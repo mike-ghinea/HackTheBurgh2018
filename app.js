@@ -79,7 +79,7 @@ app.get("/", (req, res) => {
     let date = new Date();
     let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     db.collection("readings").find().limit(10).sort({
-        date: 1
+        date: -1
     }).project({
         _id: 0,
         CO2: 1,
@@ -89,13 +89,12 @@ app.get("/", (req, res) => {
         light: 1,
         date: 1
     }).toArray((err, result) => {
-        console.log(result);
         res.render("home.ejs", {
-            result: result[result.length - 1],
-            normalizedTemp: normalizeTemp(result[result.length - 1].temperature),
-            normalizedCO2: normalizeCO2(result[result.length - 1].CO2),
-            normalizedVOC: normalizeVOC(result[result.length - 1].totalVOC),
-            results: result
+            result: result[0],
+            normalizedTemp: normalizeTemp(result[0].temperature),
+            normalizedCO2: normalizeCO2(result[0].CO2),
+            normalizedVOC: normalizeVOC(result[0].totalVOC),
+            results: result.reverse()
         });
     });
 });
