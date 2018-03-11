@@ -1,51 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <link rel="stylesheet" href="/loading-bar.css">
     <link rel="stylesheet" href="/home.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
+
 <body>
     <% include functions %>
+
+    <div id="top"></div>
     <div class="container data-display">
-        <div class="row">    
-            <div 
-            class="ldBar label-center col-md-4" 
-            data-stroke-width="6" 
-            data-preset="fan" 
-            data-value="<%= result.airQuality %>" 
-            style="height:40%">
+        <div class="row">
+            <div class="ldBar label-center col-md-3" data-stroke-width="6" data-preset="fan" data-stroke="<%= getColor(normalizedCO2) %>"
+                data-value="<%= normalizedCO2 %>" style="height:40%">
             </div>
-            <div 
-            class="ldBar label-center col-md-4" 
-            data-stroke-width="6" 
-            data-preset="fan" 
-            data-value="<%= result.humidity %>" 
-            style="height:40%">
-            </div>  
-            <div id="temp"
-            class="ldBar label-center col-md-4" 
-            data-stroke-width="6" 
-            data-preset="fan"
-            data-value="<%= normalizeTemp(result.temperature) %>" 
-            style="height:40%">
+            <div class="ldBar label-center col-md-3" data-stroke-width="6" data-preset="fan" data-stroke="<%= getColor(normalizedVOC) %>"
+                data-value="<%= normalizedVOC %>" style="height:40%">
+            </div>
+            <div class="ldBar label-center col-md-3" data-stroke-width="6" data-preset="fan" data-stroke="<%= getColor(result.humidity) %>"
+                data-value="<%= result.humidity %>" style="height:40%">
+            </div>
+            <div class="ldBar label-center col-md-3" data-stroke-width="6" data-preset="fan" data-stroke="<%= getColor(normalizedTemp) %>"
+                data-value="<%= normalizedTemp %>" style="height:40%">
             </div>
         </div>
         <div class="row">
-            <p class="col-md-4 text-center">Air Quality</p>
-            <p class="col-md-4 text-center">Humidity</p>
-            <p class="col-md-4 text-center">Temperature</p>
+            <p class="col-md-3 text-center">CO2
+                <%= result.CO2 %> units</p>
+            <p class="col-md-3 text-center">VOC
+                <%= result.totalVOC %> units</p>
+            <p class="col-md-3 text-center">Humidity
+                <%= result.humidity %>%</p>
+            <p class="col-md-3 text-center">Temperature
+                <%= result.temperature %> °C</p>
+        </div>
+        <div class="row">
+            <canvas id="CO2Chart" class="col-md-3"></canvas>
+            <canvas id="VOCChart" class="col-md-3"></canvas>
+            <canvas id="humidityChart" class="col-md-3"></canvas>
+            <canvas id="temperatureChart" class="col-md-3"></canvas>
+            
+            <script>
+                
+                let resultsJSON = <%- JSON.stringify(results) %>;
+                console.log(resultsJSON);
+                let times = [];
+                resultsJSON.forEach(result => {
+                    let date = new Date(result.date);
+                    times.push(date.getMinutes() + ":" + date.getSeconds());
+                });
+
+                console.log(times);
+
+                var ctx = document.getElementById('CO2Chart').getContext('2d');
+                let readingsCO2 = [];
+
+                resultsJSON.forEach(result => {
+                    readingsCO2.push(result.CO2.toString());
+                });
+                var airChart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+
+
+                    // The data for our dataset
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "CO2",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: readingsCO2,
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+
+                var ctx = document.getElementById('VOCChart').getContext('2d');
+                let readingsVOC = [];
+
+                resultsJSON.forEach(result => {
+                    readingsVOC.push(result.totalVOC.toString());
+                });
+                var airChart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+
+
+                    // The data for our dataset
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "VOC",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: readingsVOC,
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+                var ctx = document.getElementById('humidityChart').getContext('2d');
+                let readingsHumidity = [];
+
+                resultsJSON.forEach(result => {
+                    readingsHumidity.push(result.humidity.toString());
+                });
+                var airChart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+
+
+                    // The data for our dataset
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "humidity",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: readingsHumidity,
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+
+                var ctx = document.getElementById('temperatureChart').getContext('2d');
+                let readingsTemperature = [];
+
+                resultsJSON.forEach(result => {
+                    readingsTemperature.push(result.temperature.toString());
+                });
+                var airChart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+
+
+                    // The data for our dataset
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "CO2",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: readingsTemperature,
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+            </script>
         </div>
     </div>
 
-    
+
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 <script src="loading-bar.min.js"></script>
-<script>
-    document.getElementsByClassName("ldBar-label")[0].innerHTML = "40";
-</script>
 <script src="home.js"></script>
+
 </html>

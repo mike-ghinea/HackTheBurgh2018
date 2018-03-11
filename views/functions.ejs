@@ -1,14 +1,14 @@
-<%
-normalizeTemp = function(temp){
-    // y=mx+c
-    tempHighLimit = 50;
-    tempLowLimit = -20;
-    m = 100/(tempHighLimit - tempLowLimit);
-    c = 100 - (tempHighLimit * m);
-    result = Math.round(m * temp + c);
-    if(result == -0){
-        result = 0;
+<% 
+getColor = function(percentage){
+    if(percentage < 25){
+        return "#1a69f4";
     }
-    return result;
-}
+    if(percentage < 50){
+        return "#1af41d";
+    }
+    if(percentage < 75){
+       return "#f4691a";
+    }
+    return "#f41a1a";
+} 
 %>

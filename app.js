@@ -13,6 +13,43 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
+function normalizeTemp(temp){
+    // y=mx+c
+    let tempHighLimit = 50;
+    let tempLowLimit = -20;
+    let m = 100/(tempHighLimit - tempLowLimit);
+    let c = 100 - (tempHighLimit * m);
+    let result = Math.round(m * temp + c);
+    if(result == -0){
+        result = 0;
+    }
+    return result;
+}
+
+function normalizeCO2(co2){
+    let highLimit = 1500;
+    let lowLimit = 200;
+    let m = 100/(highLimit - lowLimit);
+    let c = 100 - (highLimit * m);
+    let result = Math.round(m * co2 + c);
+    if(result == -0){
+        result = 0;
+    }
+    return result;
+}
+
+function normalizeVOC(voc){
+    let highLimit = 1500;
+    let lowLimit = 0;
+    let m = 100/(highLimit - lowLimit);
+    let c = 100 - (highLimit * m);
+    let result = Math.round(m * voc + c);
+    if(result == -0){
+        result = 0;
+    }
+    return result;
+}
+
 mongo.connect(mongoURI, (err, client) => {
     if (err) return console.log(err);
 
@@ -22,33 +59,43 @@ mongo.connect(mongoURI, (err, client) => {
 
 app.post("/api/sensors", (req, res) => {
     //temperature, air quality, humidity, light sensor
+    console.log(req.body);
     let entry = {
-        temperature: req.body.temp,
-        airQuality: req.body.air,
-        humidity: req.body.humidity,
-        light: req.body.light,
+        temperature: req.body.Temperatures,
+        CO2: req.body.CO2,
+        totalVOC: req.body.TotalVOC,
+        humidity: req.body.Humidity,
+        light: req.body.Light,
         date: new Date()
     };
     db.collection("readings").insertOne(entry, (err, res) => {
         if (err) throw err;
-    })
+    }) 
     res.sendStatus(200);
 
 });
 
 app.get("/", (req, res) => {
-    db.collection("readings").find().sort({
-        date: -1
+    let date = new Date();
+    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    db.collection("readings").find().limit(10).sort({
+        date: 1
     }).project({
         _id: 0,
-        airQuality: 1,
+        CO2: 1,
+        totalVOC: 1,
         temperature: 1,
         humidity: 1,
         light: 1,
         date: 1
     }).toArray((err, result) => {
+        console.log(result);
         res.render("home.ejs", {
-            result: result[0]
+            result: result[result.length - 1],
+            normalizedTemp: normalizeTemp(result[result.length - 1].temperature),
+            normalizedCO2: normalizeCO2(result[result.length - 1].CO2),
+            normalizedVOC: normalizeVOC(result[result.length - 1].totalVOC),
+            results: result
         });
     });
 });
